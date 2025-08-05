@@ -1,34 +1,17 @@
-import { useState } from "react"
+import { useNavigate } from "react-router-dom";
 
 function HomePage(){
 
-    const [problemList, setProblemList] = useState(null)
-    const [textAreaIsEmpty, setTextAreaEmpty] = useState(false)
+    const navigate = useNavigate()
 
-    function handleSubmit(event){
-        if(!problemList || problemList.trim() === ""){
-            setTextAreaEmpty(true)
-            return;
-        }
-        
-        const problems = problemList.split("\n")
-        console.log(problems)
-    }
-
-    function handleTextAreaChange(event){
-        setProblemList(event.target.value)
+    function onNewStudyPlanClick(){
+        navigate("/create-plan")
     }
 
     return(
-        <div>
-            {textAreaIsEmpty && <div>Enter atleast one line</div>}
-            <div>
-                <label>Enter Your Problems Here (One Problem Per Line): </label>
-            </div>
-            <textarea cols="30" rows="10" onChange={handleTextAreaChange}></textarea>
-            <div>
-                <button className="btn btn-success" onClick={handleSubmit}>Submit</button>
-            </div>
+        <div className="container">
+            <button className="btn btn-success m-5">View Existing Study Plans</button>
+            <button className="btn btn-success m-5" onClick={onNewStudyPlanClick}>Create New Study Plans</button>
         </div>
     )
 }
