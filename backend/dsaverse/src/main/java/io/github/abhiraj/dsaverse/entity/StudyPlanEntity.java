@@ -1,6 +1,6 @@
 package io.github.abhiraj.dsaverse.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,7 +26,7 @@ public class StudyPlanEntity {
 	private long id;
 	@Column(updatable = false)
 	@CreationTimestamp
-	private LocalDateTime createdAt;
+	private LocalDate createdAt;
 	private int totalProblems;
 	@OneToMany(mappedBy = "studyPlan", cascade = CascadeType.ALL)
 	private List<ProblemEntity> problems;

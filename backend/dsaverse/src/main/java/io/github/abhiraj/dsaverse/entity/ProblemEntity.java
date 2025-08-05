@@ -30,4 +30,8 @@ public class ProblemEntity {
 		isCompleted = false;
 	}
 	
+	public boolean getCompleted() {
+		return isCompleted;
+	}
+	
 }
