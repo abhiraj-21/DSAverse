@@ -1,10 +1,13 @@
 import { useState } from "react"
 import { savePlanApi } from "./api/StudyPlanApiService";
+import { useNavigate } from "react-router-dom";
 
 function CreateNewStudyPlan(){
 
     const [problemList, setProblemList] = useState(null)
     const [textAreaIsEmpty, setTextAreaEmpty] = useState(false)
+
+    const navigate = useNavigate()
 
     function handleSubmit(event){
         if(!problemList || problemList.trim() === ""){
@@ -13,7 +16,7 @@ function CreateNewStudyPlan(){
         }
         
         const problems = {problemList : problemList.split("\n")}
-        savePlanApi(problems).then( (response) => console.log(response))
+        savePlanApi(problems).then( () => navigate("/plans"))
                             .catch( (error) => console.log(error) )
                             .finally( () => console.log('cleanUP') )
     }

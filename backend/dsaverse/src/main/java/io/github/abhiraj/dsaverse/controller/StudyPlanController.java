@@ -1,12 +1,16 @@
 package io.github.abhiraj.dsaverse.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.abhiraj.dsaverse.dto.StudyPlanDTO;
+import io.github.abhiraj.dsaverse.dto.StudyPlanResponseDTO;
 import io.github.abhiraj.dsaverse.service.StudyPlanService;
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +25,11 @@ public class StudyPlanController {
 	public ResponseEntity<StudyPlanDTO> savePlan(@RequestBody StudyPlanDTO response) {
 		studyPlanService.savePlan(response);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
+
+	@GetMapping("/get-all-plans")
+	public ResponseEntity<List<StudyPlanResponseDTO>> retrieveAllPlans(){
+		return ResponseEntity.ok(studyPlanService.getAllStudyPlans());
 	}
 	
 }
