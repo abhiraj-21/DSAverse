@@ -8,6 +8,6 @@ import io.github.abhiraj.dsaverse.entity.UserEntity;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long>{
 	
-	Optional<UserEntity> findByUsername(String username);
+    Optional<UserEntity> findByUsername(String username);
 	
 }

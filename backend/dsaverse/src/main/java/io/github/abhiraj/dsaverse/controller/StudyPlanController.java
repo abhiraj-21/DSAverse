@@ -28,8 +28,8 @@ public class StudyPlanController {
 	}
 
 	@GetMapping("/get-all-plans")
-	public ResponseEntity<List<StudyPlanResponseDTO>> retrieveAllPlans(){
-		return ResponseEntity.ok(studyPlanService.getAllStudyPlans());
+	public ResponseEntity<StudyPlanResponseDTO> retrieveAllPlans(){
+		return ResponseEntity.ok(studyPlanService.getMyStudyPlan());
 	}
 	
 }

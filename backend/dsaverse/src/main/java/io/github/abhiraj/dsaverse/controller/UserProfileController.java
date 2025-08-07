@@ -11,18 +11,9 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-public class UserController {
+public class UserProfileController {
 
 	UserService userService;
 	
-	@PostMapping(value = "/register")
-	public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDto) {
-		return userService.registerNewUser(userDto);
-	}
-	
-	@PostMapping(value = "/login")
-	public ResponseEntity<UserDTO> login(@RequestBody UserDTO userDto) {
-		return userService.login(userDto);
-	}
 
 }

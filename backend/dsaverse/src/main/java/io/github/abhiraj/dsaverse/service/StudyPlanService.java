@@ -4,6 +4,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.abhiraj.dsaverse.entity.UserEntity;
+import io.github.abhiraj.dsaverse.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,26 +24,68 @@ import lombok.RequiredArgsConstructor;
 public class StudyPlanService {
 
 	private final StudyPlanRepository studyPlanRepository;
+    private final UserRepository userRepository;
 
-	public void savePlan(StudyPlanDTO response) {
-		
-		StudyPlanEntity newPlan = new StudyPlanEntity();
-		newPlan.setTotalProblems(response.getProblemList().size());
-		
-		List<ProblemEntity> problems = new ArrayList<>();
-		for (String problemName : response.getProblemList()) {
-			ProblemEntity problem = new ProblemEntity();
-			problem.setProblemName(problemName);
-			problem.setCompleted(false);
-			problem.setStudyPlan(newPlan);
-			problems.add(problem);
-		}
-		
-		newPlan.setProblems(problems);
-		studyPlanRepository.save(newPlan);
-	}
+    public void savePlan(StudyPlanDTO response) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-	public List<ProblemResponseDTO> problemEntityToProblemResponseDTO(List<ProblemEntity> entities){
+        StudyPlanEntity existingPlan = studyPlanRepository.findByUser(user).orElse(null);
+
+        List<String> incomingQuestions = response.getProblemList();
+
+        if (existingPlan != null) {
+            List<ProblemEntity> existingProblems = existingPlan.getProblems();
+            List<String> existingNames = existingProblems.stream()
+                    .map(ProblemEntity::getProblemName)
+                    .toList();
+
+            List<String> finalMerged = new ArrayList<>();
+
+            for (String q : incomingQuestions)
+                if (existingNames.contains(q)) finalMerged.add(q);
+            for (String q : incomingQuestions)
+                if (!existingNames.contains(q)) finalMerged.add(q);
+            for (String q : existingNames)
+                if (!incomingQuestions.contains(q)) finalMerged.add(q);
+
+            List<ProblemEntity> mergedProblems = new ArrayList<>();
+            for (String q : finalMerged) {
+                ProblemEntity problem = new ProblemEntity();
+                problem.setProblemName(q);
+                problem.setCompleted(existingNames.contains(q));
+                problem.setStudyPlan(existingPlan);
+                mergedProblems.add(problem);
+            }
+
+            existingPlan.setProblems(mergedProblems);
+            existingPlan.setTotalProblems(mergedProblems.size());
+            studyPlanRepository.save(existingPlan);
+
+        } else {
+
+            StudyPlanEntity newPlan = new StudyPlanEntity();
+            newPlan.setUser(user);
+            newPlan.setTotalProblems(incomingQuestions.size());
+
+            List<ProblemEntity> problems = new ArrayList<>();
+            for (String q : incomingQuestions) {
+                ProblemEntity problem = new ProblemEntity();
+                problem.setProblemName(q);
+                problem.setCompleted(false);
+                problem.setStudyPlan(newPlan);
+                problems.add(problem);
+            }
+
+            newPlan.setProblems(problems);
+            studyPlanRepository.save(newPlan);
+        }
+    }
+
+
+    public List<ProblemResponseDTO> problemEntityToProblemResponseDTO(List<ProblemEntity> entities){
 		List<ProblemResponseDTO> problems = new ArrayList<>();
 		for(ProblemEntity entity : entities) {
 			ProblemResponseDTO problem = new ProblemResponseDTO();
@@ -63,18 +109,19 @@ public class StudyPlanService {
 		
 		return response;
 	}
-	
-	@Transactional(readOnly = true)
-	public List<StudyPlanResponseDTO> getAllStudyPlans() {
-		List<StudyPlanEntity> allStudyPlans = studyPlanRepository.findAllByOrderByCreatedAtDesc();
-		List<StudyPlanResponseDTO> response = new ArrayList<>();
-		
-		for(StudyPlanEntity studyPlan : allStudyPlans) {
-			response.add(planEntityToPlanResponseDTO(studyPlan));
-		}
-		
-		return response;
-	}
+
+    @Transactional(readOnly = true)
+    public StudyPlanResponseDTO getMyStudyPlan() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return studyPlanRepository.findByUser(user)
+                .map(this::planEntityToPlanResponseDTO)
+                .orElseThrow(() -> new RuntimeException("No study plan found for this user"));
+    }
+
 
 
 }
