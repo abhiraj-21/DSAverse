@@ -1,7 +1,10 @@
 package io.github.abhiraj.dsaverse.service;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import io.github.abhiraj.dsaverse.dto.UserDTO;
@@ -11,11 +14,17 @@ import io.github.abhiraj.dsaverse.repository.UserRepository;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
 public class UserService {
 
-	private UserRepository userRepository;
-	
+	private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
 	public ResponseEntity<UserDTO> registerNewUser(UserDTO userDto) {
 		UserEntity user = userDTOToUserEntity(userDto);
 		
@@ -23,27 +32,9 @@ public class UserService {
 			return ResponseEntity.internalServerError().body(null);
 		}
 		user.setRole(Role.USER);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 		userRepository.save(user);
 		return ResponseEntity.ok(userDto);
-	}
-	
-	public ResponseEntity<UserDTO> login(UserDTO userDto) {
-		UserEntity user = userRepository.findByUsername(userDto.getUsername()).orElse(null);
-		
-		if (user == null) {
-		    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-		
-		if (!user.isActivated()) {
-		    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-		}
-		
-		if (!userDto.getPassword().equals(user.getPassword())) {
-		    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-		}
-
-		UserDTO responseUserDto = userEntityToUserDTO(user);
-		return ResponseEntity.ok(responseUserDto);
 	}
 	
 	public UserEntity userDTOToUserEntity(UserDTO userDTO) {
