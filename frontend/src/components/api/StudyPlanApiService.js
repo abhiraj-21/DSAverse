@@ -13,3 +13,10 @@ export const retrievePlansApi = () => apiClient.get("/get-all-plans", {
         "Authorization": `Bearer ${localStorage.getItem("token")}`
     }
 })
+
+export const updateProblemStatusApi = (id, isCompleted) => apiClient.put(`/update-problem-status/${id}`, isCompleted, {
+    headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+    }
+})
