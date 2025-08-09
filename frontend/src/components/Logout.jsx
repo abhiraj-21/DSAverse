@@ -13,10 +13,10 @@ const Logout = () => {
     const navigate = useNavigate()
 
     const logout = () => {
-        authContext.logout()
         setTimeout( () => {
             navigate('/')
-        }, 1000)
+        }, 2000)
+        authContext.logout()
     }
 
     return (

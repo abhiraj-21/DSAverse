@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react"
-import { retrievePlansApi } from "./api/StudyPlanApiService"
+import {retrievePlansApi, updateProblemStatusApi} from "./api/StudyPlanApiService"
 
 function ListAllStudyPlans(){
 
-    const [plans, setPlans] = useState([])
+    const [plan, setPlan] = useState(null)
 
     useEffect(
         () => refreshStudyPlans(),[]
     )
 
     function refreshStudyPlans(){
-        retrievePlansApi().then( (response) => setPlans(response.data)) 
-                          .catch( (error) => console.log(error) )
+        retrievePlansApi().then( (response) => setPlan(response.data))
+                          .catch( (error) => console.log(error))
+    }
+
+    const updateProblem = (id, isChecked) =>{
+        updateProblemStatusApi(id, isChecked).then( () => refreshStudyPlans())
+        .catch( (error) => console.log(error) )
     }
 
     return(
@@ -27,17 +32,14 @@ function ListAllStudyPlans(){
                         </tr>
                     </thead>
                     <tbody>
-                        {
-                            plans.map(plan =>
-                            plan.problemList.map((problem, index) => (
-                                <tr key={problem.id}>
+                        {plan?.problemList?.map((problem, index) => (
+                            <tr key={problem.id}>
                                 <td>{index === 0 ? plan.id : ""}</td>
                                 <td>{index === 0 ? plan.createdAt : ""}</td>
                                 <td>{problem.problemName}</td>
-                                </tr>
-                            ))
-                            )
-                        }
+                                <td><input type='checkbox' checked={problem.completed} onChange={(e) => updateProblem(problem.id, e.target.checked)} /></td>
+                            </tr>
+                        ))}
                     </tbody>    
                 </table>
             </div>

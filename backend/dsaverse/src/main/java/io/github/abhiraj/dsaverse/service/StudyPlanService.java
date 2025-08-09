@@ -3,8 +3,11 @@ package io.github.abhiraj.dsaverse.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.github.abhiraj.dsaverse.entity.UserEntity;
+import io.github.abhiraj.dsaverse.repository.ProblemRepository;
 import io.github.abhiraj.dsaverse.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +28,7 @@ public class StudyPlanService {
 
 	private final StudyPlanRepository studyPlanRepository;
     private final UserRepository userRepository;
+    private final ProblemRepository problemRepository;
 
     public void savePlan(StudyPlanDTO response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -38,26 +42,25 @@ public class StudyPlanService {
 
         if (existingPlan != null) {
             List<ProblemEntity> existingProblems = existingPlan.getProblems();
-            List<String> existingNames = existingProblems.stream()
-                    .map(ProblemEntity::getProblemName)
-                    .toList();
 
-            List<String> finalMerged = new ArrayList<>();
+            Map<String, ProblemEntity> existingProblemMap = existingProblems.stream()
+                    .collect(Collectors.toMap(
+                            p -> p.getProblemName().trim().toLowerCase(),
+                            p -> p
+                    ));
 
-            for (String q : incomingQuestions)
-                if (existingNames.contains(q)) finalMerged.add(q);
-            for (String q : incomingQuestions)
-                if (!existingNames.contains(q)) finalMerged.add(q);
-            for (String q : existingNames)
-                if (!incomingQuestions.contains(q)) finalMerged.add(q);
+            List<ProblemEntity> mergedProblems = new ArrayList<>(existingProblems);
 
-            List<ProblemEntity> mergedProblems = new ArrayList<>();
-            for (String q : finalMerged) {
-                ProblemEntity problem = new ProblemEntity();
-                problem.setProblemName(q);
-                problem.setCompleted(existingNames.contains(q));
-                problem.setStudyPlan(existingPlan);
-                mergedProblems.add(problem);
+            for (String q : incomingQuestions) {
+                String normalized = q.trim().toLowerCase();
+                if (!existingProblemMap.containsKey(normalized)) {
+                    ProblemEntity newProblem = new ProblemEntity();
+                    newProblem.setProblemName(q.trim());
+                    newProblem.setCompleted(false);
+                    newProblem.setStudyPlan(existingPlan);
+                    mergedProblems.add(newProblem);
+                    existingProblemMap.put(normalized, newProblem);
+                }
             }
 
             existingPlan.setProblems(mergedProblems);
@@ -122,6 +125,11 @@ public class StudyPlanService {
                 .orElseThrow(() -> new RuntimeException("No study plan found for this user"));
     }
 
-
+    public void updateProblemStatus(long problemId, boolean isCompleted) {
+        problemRepository.findById(problemId). ifPresent(problem -> {
+            problem.setCompleted(isCompleted);
+            problemRepository.save(problem);
+        });
+    }
 
 }
