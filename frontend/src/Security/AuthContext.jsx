@@ -1,5 +1,5 @@
 import {createContext, useContext, useEffect, useState} from "react";
-import {loginApi} from "../components/api/AuthApiService.js";
+import {loginApi, registerApi} from "../components/api/AuthApiService.js";
 
 export const AuthContext = createContext()
 
@@ -52,8 +52,21 @@ export default function AuthProvider({ children }){
         localStorage.removeItem('username')
     }
 
+    const register = async (username, password, email, isActivated ) => {
+        const credentials = { username, password, email, isActivated }
+
+        try{
+            const response = await registerApi(credentials)
+            console.log(response.status)
+            return response.status === 201
+        }catch(error){
+            console.log("Registration Failed",error)
+            return false
+        }
+    }
+
     return (
-        <AuthContext.Provider value={ {login, logout, username, isAuthenticated} }>
+        <AuthContext.Provider value={ {login, logout, username, isAuthenticated, register} }>
             { children }
         </AuthContext.Provider>
     )

@@ -7,6 +7,7 @@ import Login from "./Login.jsx";
 import AuthProvider, {useAuth} from "../Security/AuthContext.jsx";
 import Welcome from "./Welcome.jsx";
 import Logout from "./Logout.jsx";
+import Register from "./Register.jsx";
 
 export default function Dsaverese(){
 
@@ -28,6 +29,7 @@ export default function Dsaverese(){
                     <Routes>
                         <Route path="/" element={<HomePage />}/>
                         <Route path='/login' element={<Login />} />
+                        <Route path='/register' element={<Register />} />
                         <Route path="/create-plan" element={
                             <AuthenticatedRoute>
                                 <CreateNewStudyPlan />

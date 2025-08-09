@@ -25,6 +25,10 @@ const Login = () => {
         }
     }
 
+    const handleRegister = async () => {
+        navigate('/register')
+    }
+
     return (
         <div>
             <div>
@@ -38,6 +42,10 @@ const Login = () => {
                 </div>
                 <div>
                     <button type='submit' onClick={handleSubmit}>Login</button>
+                </div>
+                <div className='my-4'>
+                    <p className='text-black-50'>Not a member yet? Sign Up first: </p>
+                    <button className='btn btn-primary' onClick={handleRegister}>Register</button>
                 </div>
             </div>
         </div>

@@ -34,7 +34,7 @@ public class UserService {
 		user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 		userRepository.save(user);
-		return ResponseEntity.ok(userDto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(userEntityToUserDTO(user));
 	}
 	
 	public UserEntity userDTOToUserEntity(UserDTO userDTO) {
