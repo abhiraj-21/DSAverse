@@ -1,10 +1,19 @@
-import React from 'react'
-import {useAuth} from "../Security/AuthContext.jsx";
-import {useParams} from "react-router-dom";
+import React, {useEffect} from 'react'
+import {useNavigate, useParams} from "react-router-dom";
 
 const Welcome = () => {
 
-    const authContext = useAuth()
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        welcome()
+    }, []);
+
+    const welcome = () => {
+        setTimeout(() => {
+            navigate('/')
+        }, 2000)
+    }
 
     const {username} = useParams()
 

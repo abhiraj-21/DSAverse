@@ -3,15 +3,15 @@ import { retrievePlansApi } from "./api/StudyPlanApiService"
 
 function ListAllStudyPlans(){
 
-    const [plans, setPlans] = useState([])
+    const [plan, setPlan] = useState([])
 
     useEffect(
         () => refreshStudyPlans(),[]
     )
 
     function refreshStudyPlans(){
-        retrievePlansApi().then( (response) => setPlans(response.data)) 
-                          .catch( (error) => console.log(error) )
+        retrievePlansApi().then( (response) => setPlan(response.data)
+                          .catch( (error) => console.log(error) ))
     }
 
     return(
@@ -27,17 +27,13 @@ function ListAllStudyPlans(){
                         </tr>
                     </thead>
                     <tbody>
-                        {
-                            plans.map(plan =>
-                            plan.problemList.map((problem, index) => (
-                                <tr key={problem.id}>
+                        {plan?.problemList?.map((problem, index) => (
+                            <tr key={problem.id}>
                                 <td>{index === 0 ? plan.id : ""}</td>
                                 <td>{index === 0 ? plan.createdAt : ""}</td>
                                 <td>{problem.problemName}</td>
-                                </tr>
-                            ))
-                            )
-                        }
+                            </tr>
+                        ))}
                     </tbody>    
                 </table>
             </div>
