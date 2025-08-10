@@ -1,32 +1,29 @@
 import { useNavigate } from "react-router-dom";
 
-function HomePage(){
+function HomePage() {
+    const navigate = useNavigate();
 
-    const navigate = useNavigate()
+    return (
+        <div className="d-flex flex-column align-items-center justify-content-center min-vh-100 text-center">
+            <h1 className="display-4 mb-4">Welcome to DSAverse</h1>
 
-    function onNewStudyPlanClick(){
-        navigate("/create-plan")
-    }
+            <div className="d-flex flex-column flex-sm-row gap-3 mt-3">
+                <button
+                    className="btn btn-outline-primary"
+                    onClick={() => navigate("/plans")}
+                >
+                    View Existing Study Plans
+                </button>
 
-    function onViewPlanClick(){
-        navigate("/plans")
-    }
-
-    return(
-        <div style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minHeight: "80vh", // Adjust so it doesn't collide with fixed header
-                    }}>
-                        <h1>Welcome to DSAverse</h1>
-                        <div style={{ display: "flex", gap: "1rem", marginTop: "2rem" }}>
-                            <button onClick={() => navigate("/plans")}>View Existing Study Plans</button>
-                            <button onClick={() => navigate("/create-plan")}>Create New Study Plans</button>
-                        </div>
+                <button
+                    className="btn btn-primary"
+                    onClick={() => navigate("/create-plan")}
+                >
+                    Create New Study Plan
+                </button>
+            </div>
         </div>
-    )
+    );
 }
 
-export default HomePage
+export default HomePage;
