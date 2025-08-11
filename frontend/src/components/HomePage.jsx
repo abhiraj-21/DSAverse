@@ -4,19 +4,19 @@ function HomePage() {
     const navigate = useNavigate();
 
     return (
-        <div className="d-flex flex-column align-items-center justify-content-center min-vh-100 text-center">
-            <h1 className="display-4 mb-4">Welcome to DSAverse</h1>
+        <div className="flex flex-col gap-4 items-center justify-center min-h-screen min-w-screen">
+            <h1 className=" text-5xl font-bold text-center text-gray-800">Welcome to DSAverse</h1>
 
-            <div className="d-flex flex-column flex-sm-row gap-3 mt-3">
+            <div className="flex items-center justify-center gap-4">
                 <button
-                    className="btn btn-outline-primary"
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-500/90 transition-colors hover:cursor-pointer"
                     onClick={() => navigate("/plans")}
                 >
                     View Existing Study Plans
                 </button>
 
                 <button
-                    className="btn btn-primary"
+                    className=" text-black px-4 py-2 border-1 rounded hover:bg-blue-500/90 transition-colors hover:cursor-pointer hover:text-white"
                     onClick={() => navigate("/create-plan")}
                 >
                     Create New Study Plan

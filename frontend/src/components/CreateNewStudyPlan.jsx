@@ -28,31 +28,30 @@ function CreateNewStudyPlan() {
     }
 
     return (
-        <div className="container d-flex flex-column align-items-center justify-content-center min-vh-100 text-light">
-            <div className="w-100" style={{ maxWidth: "600px" }}>
-                <h2 className="mb-4 text-center">Create New Study Plan</h2>
+        <div>
+            <div>
+                <h2>Create New Study Plan</h2>
 
                 {textAreaIsEmpty && (
-                    <div className="alert alert-warning" role="alert">
+                    <div>
                         Please enter at least one problem.
                     </div>
                 )}
 
-                <div className="mb-3">
-                    <label htmlFor="problemList" className="form-label">
+                <div>
+                    <label htmlFor="problemList">
                         Enter Your Problems (One per line)
                     </label>
                     <textarea
                         id="problemList"
-                        className="form-control"
                         rows="10"
                         placeholder="e.g., Two Sum\nBinary Search Tree\n..."
                         onChange={handleTextAreaChange}
                     ></textarea>
                 </div>
 
-                <div className="d-grid">
-                    <button className="btn btn-success" onClick={handleSubmit}>
+                <div>
+                    <button onClick={handleSubmit}>
                         Submit Plan
                     </button>
                 </div>

@@ -18,12 +18,12 @@ const Logout = () => {
     };
 
     return (
-        <div className="container d-flex flex-column align-items-center justify-content-center min-vh-100 text-light">
-            <div className="text-center">
-                <h1 className="display-5 mb-3">Thank You for Visiting!</h1>
-                <p className="lead">You are being logged out...</p>
-                <div className="spinner-border text-light mt-3" role="status">
-                    <span className="visually-hidden">Logging out...</span>
+        <div>
+            <div>
+                <h1>Thank You for Visiting!</h1>
+                <p>You are being logged out...</p>
+                <div>
+                    <span>Logging out...</span>
                 </div>
             </div>
         </div>

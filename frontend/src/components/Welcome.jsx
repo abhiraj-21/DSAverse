@@ -15,11 +15,9 @@ const Welcome = () => {
     }, [navigate]);
 
     return (
-        <div className="d-flex flex-column align-items-center justify-content-center min-vh-100 text-light">
-            <div className="text-center">
-                <h1 className="display-4">Welcome, {username}!</h1>
-                <p className="lead mt-3">Redirecting you to the homepage...</p>
-            </div>
+        <div className='flex flex-col items-center justify-center gap-2 min-h-screen min-w-screen'>
+            <h1 className='text-2xl font-bold text-gray-800'>Welcome, {username}!</h1>
+            <p className='text-violet-500'>Redirecting you to the homepage...</p>
         </div>
     );
 };
